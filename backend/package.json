@@ -6,18 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "server": "nodemon script.js"
+    "server": "nodemon script.js",
+    "frontend": "cd .. && cd frontend && npm start",
+    "app": "concurrently \"npm run server\" \"npm run frontend\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
+    "http-proxy-middleware": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.0",
+    "npm": "^10.8.3",
     "pusher": "^5.2.0"
   },
   "devDependencies": {

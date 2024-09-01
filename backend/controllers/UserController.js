@@ -31,16 +31,27 @@ const login = asyncHandler(async (req, res)=>{
     // console.log(process.env.JWT_SECRET);
     // compare password with hashed password
     if(user && (await bcrypt.compare(password,user.password))){
-        const accesstoken=jwt.sign({
-            user:{
-                    username:user.username,
-                    email:user.email,
-                    id:user.id,
-                }
-            },process.env.JWT_SECRET,
-            { expiresIn:"1d" }
-        );
-        res.status(200).json({accesstoken});
+        const accesstoken = jwt.sign(
+            {
+              user: {
+                username: user.username,
+                email: user.email,
+                id: user._id, // or user.id depending on your database
+              },
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+          );
+          
+          // After creating the access token, return it in the response
+          res.json({
+            token: accesstoken,
+            user: {
+              id: user._id, // or user.id
+              username: user.username,
+              email: user.email,
+            },
+          });
     }else {
         res.status(401);
         throw new Error("email or password is not valid");

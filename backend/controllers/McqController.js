@@ -23,7 +23,7 @@ const getUserMcqs = async (req, res) => {
     try {
         // Get the logged-in user's ID from the request
         const userId = req.user.id;
-    
+        // console.log(userId);
         // Find all MCQs added by this user
         const mcqs = await MCQ.find({ user: userId });
     

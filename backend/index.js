@@ -1,12 +1,18 @@
 const express = require('express'); // Express is a web framework for Node.js.
 const mongoose = require('mongoose'); // Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js.
 const dotenv = require('dotenv'); // dotenv allows us to load environment variables from a .env file into process.env.
+const cors = require('cors');
 
 // Load environment variables from the .env file into process.env
 dotenv.config(); 
 
 // Initialize an Express application
 const app = express();
+
+// Use CORS middleware
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow requests from this origin
+}));
 
 // Get the port number from environment variables (defined in the .env file)
 const port = process.env.PORT;
