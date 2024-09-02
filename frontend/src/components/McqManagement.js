@@ -1,78 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const McqManagement = () => {
-  const [mcqs, setMcqs] = useState([]);
-  const [newMcq, setNewMcq] = useState({
-    question: '',
-    option1: '',
-    option2: '',
-    option3: '',
-    correct: '',
-    difficulty: '',
-    subject: ''
-  });
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId'); // Get user ID from local storage
-  console.log('user id : ',userId);
-  
-  useEffect(() => {
-    const fetchMCQs = async () => {
-      try {
-        const response = await axios.get('http://localhost:7777/api/mcq/user/');
-        setMcqs(response.data);
-      } catch (error) {
-        console.error('Failed to fetch MCQs:', error);
-      }
-    };
 
-    fetchMCQs();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewMcq({ ...newMcq, [name]: value });
-  };
+  const questionRef = useRef('');
+  const option1Ref = useRef('');
+  const option2Ref = useRef('');
+  const option3Ref = useRef('');
+  const correctRef = useRef('');
+  const difficultyRef = useRef('');
+  const subjectRef = useRef('');
 
   const handleCreateMcq = async () => {
+    const newMcq = {
+      question: questionRef.current.value,
+      option1: option1Ref.current.value,
+      option2: option2Ref.current.value,
+      option3: option3Ref.current.value,
+      correct: correctRef.current.value,
+      difficulty: difficultyRef.current.value,
+      subject: subjectRef.current.value,
+      user: userId
+    };
+
     try {
-      const response = await axios.post('/api/mcq', { ...newMcq, user: userId });
-      setMcqs([...mcqs, response.data]);
+      await axios.post('http://localhost:7777/api/mcq', newMcq);
     } catch (error) {
       console.error('Failed to create MCQ:', error);
     }
+  };
+
+  const goToSubmittedMcqs = () => {
+    navigate('/viewmcqs');
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userId'); // Remove user ID from local storage
     delete axios.defaults.headers.common['Authorization'];
-    navigate('/login');
+    navigate('/');
   };
 
   return (
     <div>
-      <h2>Dashboard</h2>
+      <h2>Form to Add MCQ</h2>
       <button onClick={handleLogout}>Logout</button>
+      <button onClick={goToSubmittedMcqs}>View your submitted MCQs</button>
 
-      <h3>Your MCQs</h3>
-      <ul>
-        {mcqs.map(mcq => (
-          <li key={mcq._id}>
-            {mcq.question} (Subject: {mcq.subject}, Difficulty: {mcq.difficulty})
-          </li>
-        ))}
-      </ul>
-
-      <h3>Create a New MCQ</h3>
-      <input name="question" placeholder="Question" value={newMcq.question} onChange={handleInputChange} />
-      <input name="option1" placeholder="Option 1" value={newMcq.option1} onChange={handleInputChange} />
-      <input name="option2" placeholder="Option 2" value={newMcq.option2} onChange={handleInputChange} />
-      <input name="option3" placeholder="Option 3" value={newMcq.option3} onChange={handleInputChange} />
-      <input name="correct" placeholder="Correct Answer" value={newMcq.correct} onChange={handleInputChange} />
-      <input name="difficulty" placeholder="Difficulty" value={newMcq.difficulty} onChange={handleInputChange} />
-      <input name="subject" placeholder="Subject" value={newMcq.subject} onChange={handleInputChange} />
+      <input ref={questionRef} name="question" placeholder="Question" /><br />
+      <input ref={option1Ref} name="option1" placeholder="Option 1" /><br />
+      <input ref={option2Ref} name="option2" placeholder="Option 2" /><br />
+      <input ref={option3Ref} name="option3" placeholder="Option 3" /><br />
+      <input ref={correctRef} name="correct" placeholder="Correct Answer" /><br />
+      <input ref={difficultyRef} name="difficulty" placeholder="Difficulty" /><br />
+      <input ref={subjectRef} name="subject" placeholder="Subject" /><br />
       <button onClick={handleCreateMcq}>Create MCQ</button>
     </div>
   );

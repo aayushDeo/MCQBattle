@@ -28,7 +28,8 @@ const getUserMcqs = async (req, res) => {
         const mcqs = await MCQ.find({ user: userId });
     
         if (!mcqs.length) {
-          return res.status(404).json({ message: 'No MCQs found for this user.' });
+            console.log('No MCQs found for this user.');
+        //   return res.status(404).json({ message: 'No MCQs found for this user.' });
         }
     
         res.json(mcqs);

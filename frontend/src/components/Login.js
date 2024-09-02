@@ -10,17 +10,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // console.error('1',email);
-      // console.error('1',password);
       const response = await axios.post('http://localhost:7777/api/user/login', { email, password });
-      // console.error('2');
       localStorage.setItem('token', response.data.token);
-      console.error('3', response.data);
       localStorage.setItem('userId', response.data.user.id); // Store user ID
-      console.error('4');
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      console.error('5');
-      navigate('/mcqManagement');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Failed to login:', error);
     }
